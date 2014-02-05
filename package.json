@@ -1,0 +1,27 @@
+{
+  "name": "macatapa",
+  "version": "0.0.0",
+  "description": "A map viewer for catan",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jaredly/macatapa.git"
+  },
+  "keywords": [
+    "catan",
+    "map",
+    "canvas",
+    "viewer"
+  ],
+  "author": "Jared Forsyth <jared@jaredforsyth.com>",
+  "license": "Apache v2",
+  "bugs": {
+    "url": "https://github.com/jaredly/macatapa/issues"
+  }
+}

@@ -26,13 +26,47 @@ module.exports = function (els) {
 
 },{"./lib":2}],2:[function(require,module,exports){
 
+var HEX_COLORS = {
+  Sheep: '#5f5',
+  Wheat: '#ffb',
+  Brick: '#f57',
+  Ore: '#999',
+  Wood: '#aa5',
+  Desert: '#cba',
+  Water: '#def'
+}
+
+var PLAYER = {
+  // '-1': 'transparent',
+  0: 'red',
+  1: 'green',
+  2: 'blue',
+  3: 'orange'
+}
+
 module.exports = function (canvas, data, done) {
   var width = canvas.width
     , height = canvas.height
     , ctx = canvas.getContext('2d')
   width = width < height ? width : height
-  ctx.fillStyle = 'red'
+  ctx.clearRect(0, 0, width, height)
+  ctx.lineCap = 'round'
+  ctx.lineJoin = 'round'
   drawTiles(ctx, width, 20, data.map.hexGrid)
+  drawKey(ctx, 10, 10, 15, HEX_COLORS)
+  drawKey(ctx, 120, 10, 15, PLAYER)
+}
+
+function drawKey(ctx, x, y, size, labels) {
+  var i = 0
+  ctx.font = size + 'px sans-serif'
+  for (var name in labels) {
+    ctx.fillStyle = labels[name]
+    ctx.fillRect(x, y + i*(size + 5), size, size)
+    ctx.fillStyle = 'black'
+    ctx.fillText(name, x + 10 + size, y + (i+.6)*(size + 5))
+    i+=1
+  }
 }
 
 var RAD = 6
@@ -60,19 +94,8 @@ function drawTiles(ctx, width, padding, grid) {
 }
 
 function color(hex) {
-  if (!hex.isLand) return 'blue'
-  var type = {
-    Sheep: '#ccc',
-    Wheat: '#aff',
-    Brick: '#faf',
-    Ore: '#999',
-    Wood: '#ffb',
-    Desert: '#fba'
-  }[hex.landtype]
-  if (!type) {
-    console.log(hex.landtype)
-  }
-  return type || '#000'
+  if (!hex.isLand) return HEX_COLORS.Water
+  return HEX_COLORS[hex.landtype || 'Desert']
 }
 
 function hexPoints(rx, ry, hw) {
@@ -97,21 +120,23 @@ function hexLines(rx, ry, hw) {
 }
 
 function drawGon(ctx, rx, ry, hw) {
-  ctx.beginPath()
   var points = hexPoints(rx, ry, hw)
+  ctx.beginPath()
   ctx.moveTo(points[points.length-1][0], points[points.length-1][1])
   for (var i=0; i<points.length; i++) {
     ctx.lineTo(points[i][0], points[i][1])
   }
   ctx.fill()
-}
-
-var PLAYER = {
-  '-1': 'transparent',
-  0: 'red',
-  1: 'green',
-  2: 'blue',
-  3: 'orange'
+  /**
+  ctx.strokeStyle = '#555'
+  ctx.lineWidth = 2
+  ctx.beginPath()
+  ctx.moveTo(points[points.length-1][0], points[points.length-1][1])
+  for (var i=0; i<points.length; i++) {
+    ctx.lineTo(points[i][0], points[i][1])
+  }
+  ctx.stroke()
+  **/
 }
 
 function drawHexVetices(ctx, width, hw, hex, x0, y0) {
@@ -158,14 +183,13 @@ function drawHex(ctx, width, hw, hex, x0, y0) {
   ctx.fillStyle = color(hex)
   // ctx.fillRect(rx - hw/2, ry - hw/2, hw, hw)
   drawGon(ctx, rx, ry, hw)
-}
+  ctx.font = (hw/3) + 'px sans-serif'
 
-function drawLine(ctx, width, hw, hex, x0, y0) {
-  var cx = width/2
-    , x = (hex.location.x)
-    , y = (hex.location.y)
-    , rx = cx + x * hw
-    , ry = cx + y * hw + x * hw/2
+  ctx.strokeStyle = 'white'
+  ctx.lineWidth = hw/20
+  ctx.strokeText(x + ', ' + y,  rx - hw/3, ry + hw/8)
+  ctx.fillStyle = 'black'
+  ctx.fillText(x + ', ' + y,  rx - hw/3, ry + hw/8)
 }
 
 

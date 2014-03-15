@@ -1,4 +1,4 @@
-## Settler's of Catan Map Drawing
+## Settler's of Catan Map Drawer
 
 ![screenshot](screenshot.png)
 
